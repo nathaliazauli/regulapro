@@ -1,0 +1,678 @@
+<!-- LOGIN -->
+<div id="login-screen">
+  <div class="login-card">
+    <div class="login-logo">RegulaPro</div>
+    <div class="login-sub">Painel de Assuntos Regulatórios · ANVISA</div>
+    <div class="form-group">
+      <label class="form-label">E-mail</label>
+      <input class="form-ctrl" type="email" id="lu" placeholder="voce@empresa.com" autocomplete="username">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Senha</label>
+      <input class="form-ctrl" type="password" id="lp" placeholder="••••••••" autocomplete="current-password">
+    </div>
+    <div id="login-err" class="login-err">Não foi possível entrar. Confira e-mail e senha.</div>
+    <div id="login-info" class="login-err" style="display:none;background:var(--s-ok-bg);color:var(--s-ok);border-color:var(--s-ok-bg)"></div>
+    <button class="btn primary" style="width:100%;margin-top:10px;justify-content:center;padding:11px;" onclick="doLogin()">Entrar</button>
+    <button class="btn" id="btn-signup-toggle" style="width:100%;margin-top:8px;justify-content:center;padding:9px;font-size:12.5px" onclick="doSignup()">Primeiro acesso? Criar conta com este e-mail e senha</button>
+    <div style="margin-top:14px;font-size:11px;color:var(--text3);text-align:center;">O primeiro e-mail cadastrado vira administrador automaticamente.</div>
+  </div>
+</div>
+
+<!-- APP -->
+<div class="shell" id="app" style="display:none">
+  <nav class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-mark">
+        <div class="logo-icon">R</div>
+        <div><div class="logo-text">RegulaPro</div><div class="logo-sub">ANVISA · Cosméticos</div></div>
+      </div>
+    </div>
+    <div class="sidebar-nav">
+
+      <div class="sidebar-section">Demandas</div>
+      <button class="nav-item" onclick="showPage('demandas',this)">
+        <span class="nav-icon">🗂️</span> Painel de Demandas
+      </button>
+
+      <div class="sidebar-section">Produto</div>
+      <button class="nav-item active" onclick="showPage('painel',this)">
+        <span class="nav-icon">📋</span> Painel de Produtos
+      </button>
+
+      <div class="sidebar-section">Internacional</div>
+      <button class="nav-item" onclick="showPage('internacional',this)">
+        <span class="nav-icon">🌍</span> Painel Internacional
+      </button>
+
+      <div class="sidebar-section">Biodiversidade</div>
+      <button class="nav-item" onclick="showPage('biodiversidade',this)">
+        <span class="nav-icon">🌿</span> Painel Biodiversidade
+      </button>
+
+      <div class="sidebar-section">Marcas & Patentes</div>
+      <button class="nav-item" onclick="showPage('marcas',this)">
+        <span class="nav-icon">™️</span> Painel Marcas
+      </button>
+      <button class="nav-item" onclick="showPage('patentes',this)">
+        <span class="nav-icon">📜</span> Painel Patentes
+      </button>
+
+      <div class="sidebar-section">ANVISA</div>
+      <button class="nav-item" onclick="showPage('anvisa',this)">
+        <span class="nav-icon">🏛️</span> Painel ANVISA
+      </button>
+
+      <div class="sidebar-section">Roubo de Carga</div>
+      <button class="nav-item" onclick="showPage('roubo',this)">
+        <span class="nav-icon">🚨</span> Painel Roubo de Carga
+      </button>
+
+      <div class="sidebar-section">Licença</div>
+      <button class="nav-item" onclick="showPage('licenca',this)">
+        <span class="nav-icon">📄</span> Renovação de Licença
+      </button>
+
+      <div class="sidebar-section">Reuniões</div>
+      <button class="nav-item" onclick="showPage('painel-reunioes',this)">
+        <span class="nav-icon">📋</span> Painel de Reuniões
+      </button>
+
+
+      <div class="sidebar-section">Análise</div>
+      <button class="nav-item" onclick="showPage('analytics',this)">
+        <span class="nav-icon">📊</span> Levantamentos
+      </button>
+      <button class="nav-item" onclick="showPage('bi',this)">
+        <span class="nav-icon">🔍</span> Painel BI
+      </button>
+
+      <div class="sidebar-section admin-only">Admin</div>
+      <button class="nav-item admin-only" onclick="showPage('usuarios',this)">
+        <span class="nav-icon">👥</span> Usuários
+      </button>
+      <button class="nav-item admin-only" onclick="showPage('sla',this)">
+        <span class="nav-icon">⏱️</span> Controle
+      </button>
+      <button class="nav-item admin-only" onclick="showPage('checklist',this)">
+        <span class="nav-icon">✅</span> Checklist
+      </button>
+
+    </div>
+    <div class="sidebar-footer">
+      <div class="user-chip">
+        <div class="user-av" id="sav">AD</div>
+        <div><div class="user-nm" id="snm">Admin</div><div class="user-rl" id="srl">Administrador</div></div>
+      </div>
+      <button class="btn" style="width:100%;margin-top:8px;justify-content:center;font-size:12px;" onclick="doLogout()">Sair</button>
+      <div class="designer-watermark">Designed by <strong>Nathalia Zauli</strong></div>
+    </div>
+  </nav>
+
+  <div class="main">
+    <div class="topbar">
+      <div class="topbar-title" id="page-title">Painel de Produtos</div>
+      <div class="topbar-right">
+        <span style="font-size:11.5px;color:var(--text3);font-family:var(--mono)" id="tdate"></span>
+        <div class="theme-switch" id="theme-switch">
+          <button class="theme-opt" data-theme-opt="light" onclick="setTheme('light')" title="Tema claro">☀️</button>
+          <button class="theme-opt" data-theme-opt="dark" onclick="setTheme('dark')" title="Tema escuro">🌙</button>
+          <button class="theme-opt" data-theme-opt="system" onclick="setTheme('system')" title="Acompanhar sistema">🖥️</button>
+        </div>
+        <button class="btn" id="btn-export-analytics" style="display:none" onclick="exportExcel('analytics')">📥 Exportar Levantamentos</button>
+        <button class="btn" id="btn-export-bi" style="display:none" onclick="exportExcel('bi')">📥 Exportar BI</button>
+      </div>
+    </div>
+
+    <!-- PAINEL DE DEMANDAS GERAL -->
+    <div class="page" id="page-demandas">
+      <div class="pd-toolbar">
+        <div class="pd-search-bar">
+          <span style="font-size:15px;color:var(--text3)">🔍</span>
+          <input id="pd-search" placeholder="Buscar demanda por nome..." oninput="filterPD()">
+        </div>
+        <span id="pd-count" style="font-size:12px;color:var(--text3);font-weight:600"></span>
+      </div>
+      <div class="pd-filters" id="pd-filters">
+        <span style="font-size:10.5px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px">Tipo:</span>
+        <button class="chip active" onclick="setPDFilter('tipo','all',this)">Todos</button>
+        <button class="chip" onclick="setPDFilter('tipo','produto',this)">📦 Produto</button>
+        <button class="chip" onclick="setPDFilter('tipo','reuniao',this)">📋 Reunião</button>
+        <button class="chip" onclick="setPDFilter('tipo','materiaprima',this)">🧪 Matéria-Prima</button>
+        <div style="width:1px;height:20px;background:var(--border);margin:0 4px"></div>
+        <span style="font-size:10.5px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px">Status:</span>
+        <button class="chip active" onclick="setPDFilter('status','all',this)">Todos</button>
+        <button class="chip" onclick="setPDFilter('status','ativo',this)">🔄 Em aberto</button>
+        <button class="chip" onclick="setPDFilter('status','concluido',this)">✅ Concluídos</button>
+      </div>
+      <div class="pd-summary-row" id="pd-summary-row"></div>
+      <div id="pd-list"></div>
+    </div>
+
+    <!-- PAINEL -->
+    <div class="page active" id="page-painel">
+      <div class="filter-bar">
+        <span class="filter-lbl">Analista:</span>
+        <div class="filter-group" id="fc-colab">
+          <button class="chip active" style="background:var(--accent);color:#fff;border-color:var(--accent)" onclick="setFilter('colab','all',this)">Todas</button>
+          <button class="chip" style="--cc:var(--c-ana)" onclick="setFilter('colab','ana',this)">Ana</button>
+          <button class="chip" style="--cc:var(--c-bea)" onclick="setFilter('colab','bea',this)">Beatriz</button>
+          <button class="chip" style="--cc:var(--c-car)" onclick="setFilter('colab','car',this)">Carla</button>
+          <button class="chip" style="--cc:var(--c-dan)" onclick="setFilter('colab','dan',this)">Daniela</button>
+          <button class="chip" style="--cc:var(--c-eli)" onclick="setFilter('colab','eli',this)">Elisabete</button>
+          <button class="chip" style="--cc:var(--c-fab)" onclick="setFilter('colab','fab',this)">Fabiana</button>
+        </div>
+        <div class="filter-sep"></div>
+        <span class="filter-lbl">Status:</span>
+        <div class="filter-group" id="fc-status">
+          <button class="chip active" style="background:var(--accent);color:#fff;border-color:var(--accent)" onclick="setFilter('status','all',this)">Todos</button>
+          <button class="chip" onclick="setFilter('status','backlog',this)">📦 Backlog</button>
+          <button class="chip" onclick="setFilter('status','andamento',this)">🔄 Em andamento</button>
+          <button class="chip" onclick="setFilter('status','aguardando',this)">⏳ Ag. Retorno</button>
+          <button class="chip" onclick="setFilter('status','concluido',this)">✅ Concluídos</button>
+          <button class="chip" onclick="setFilter('status','prioridade',this)">⭐ Prioridades</button>
+          <button class="chip" onclick="setFilter('status','esgotamento',this)">⏳ Ag. Esgotamento</button>
+        </div>
+      </div>
+      <div class="painel-search-bar">
+        <span style="font-size:16px;color:var(--text3)">🔍</span>
+        <input class="painel-search-input" id="painel-search" placeholder="Buscar produto por nome..." oninput="searchPainel(this.value)">
+        <span class="painel-search-count" id="painel-search-count" style="display:none"></span>
+        <button class="painel-search-clear" id="painel-search-clear" onclick="clearPainelSearch()" style="display:none" title="Limpar busca">✕</button>
+        <button class="btn primary sm admin-only" onclick="openNovoProduto()" style="white-space:nowrap;flex-shrink:0">+ Novo Produto</button>
+      </div>
+      <div class="backup-banner admin-only" id="backup-banner" style="display:none">
+        <span>📧 Backup diário ainda não enviado hoje para <strong>g_regulatorio@granadophebo.com.br</strong></span>
+        <div style="display:flex;gap:6px">
+          <button class="btn sm primary" onclick="dispararBackupEmail()">Enviar agora</button>
+          <button class="btn sm" onclick="dismissBackupBanner()">Lembrar depois</button>
+        </div>
+      </div>
+      <div class="sla-bar" id="sla-bar">
+        <span class="sla-lbl">⏱ SLA (dias úteis):</span>
+        <span class="sla-etapa"><span class="sla-dot" style="background:#6366f1"></span>Validação <input type="number" id="sla-val" min="1" value="5"></span>
+        <span class="sla-etapa"><span class="sla-dot" style="background:#f59e0b"></span>Rotulagem <input type="number" id="sla-rot" min="1" value="3"></span>
+        <span class="sla-etapa"><span class="sla-dot" style="background:#ec4899"></span>Arte <input type="number" id="sla-art" min="1" value="3"></span>
+        <span class="sla-etapa"><span class="sla-dot" style="background:#0ea5e9"></span>ANVISA <input type="number" id="sla-anv" min="1" value="10"></span>
+        <span class="sla-etapa"><span class="sla-dot" style="background:#10b981"></span>Pós-ANVISA <input type="number" id="sla-pos" min="1" value="5"></span>
+        <button class="sla-save" onclick="saveSLA()">💾 Salvar SLA</button>
+        <span id="sla-msg" style="font-size:11px;color:var(--s-ok);font-weight:700;display:none">✓ Salvo!</span>
+      </div>
+      <div id="inbox-container"></div>
+      <div class="colabs-grid" id="colabs-grid"></div>
+    </div>
+
+    <!-- BI -->
+    <div class="page" id="page-bi">
+      <div id="bi-content"></div>
+    </div>
+
+    <!-- ANALYTICS -->
+    <div class="page" id="page-analytics">
+      <div id="analytics-content"></div>
+    </div>
+
+    <!-- EMPTY PANELS -->
+    <div class="page" id="page-internacional"><div class="empty-panel"><div class="empty-panel-icon">🌍</div><div class="empty-panel-title">Painel Internacional</div><div class="empty-panel-sub">Este painel está em desenvolvimento. Em breve você poderá gerenciar demandas regulatórias internacionais aqui.</div></div></div>
+
+    <!-- BIODIVERSIDADE (inclui Matéria-prima) -->
+    <div class="page" id="page-biodiversidade">
+      <div class="empty-panel" style="padding:22px 26px;margin-bottom:18px">
+        <div style="display:flex;align-items:center;gap:12px">
+          <div class="empty-panel-icon" style="font-size:30px;margin:0">🌿</div>
+          <div>
+            <div class="empty-panel-title" style="margin:0;font-size:16px">Painel Biodiversidade</div>
+            <div class="empty-panel-sub" style="margin:2px 0 0">Gestão de demandas regulatórias relacionadas à biodiversidade e acesso ao patrimônio genético.</div>
+          </div>
+        </div>
+      </div>
+      <div class="section-title" style="margin-bottom:10px">🧪 Matéria-prima</div>
+      <div class="painel-search-bar" style="margin-bottom:14px">
+        <span style="font-size:16px;color:var(--text3)">🔍</span>
+        <input class="painel-search-input" id="mp-search" placeholder="Buscar matéria prima por nome ou código..." oninput="searchMP(this.value)">
+        <span class="painel-search-count" id="mp-count" style="display:none"></span>
+        <button class="painel-search-clear" id="mp-search-clear" onclick="clearMPSearch()" style="display:none" title="Limpar busca">✕</button>
+        <button class="btn primary sm" onclick="openMPModal()" style="white-space:nowrap;flex-shrink:0">+ Nova Matéria-Prima</button>
+      </div>
+      <div id="mp-list"></div>
+    </div>
+
+    <div class="page" id="page-marcas"><div class="empty-panel"><div class="empty-panel-icon">™️</div><div class="empty-panel-title">Painel Marcas</div><div class="empty-panel-sub">Controle de registro, renovação e monitoramento de marcas da empresa.</div></div></div>
+    <div class="page" id="page-patentes"><div class="empty-panel"><div class="empty-panel-icon">📜</div><div class="empty-panel-title">Painel Patentes</div><div class="empty-panel-sub">Acompanhamento de depósitos, concessões e manutenção de patentes.</div></div></div>
+    <div class="page" id="page-anvisa"><div class="empty-panel"><div class="empty-panel-icon">🏛️</div><div class="empty-panel-title">Painel ANVISA</div><div class="empty-panel-sub">Monitoramento de notificações, registros e interações com a ANVISA.</div></div></div>
+    <div class="page" id="page-roubo"><div class="empty-panel"><div class="empty-panel-icon">🚨</div><div class="empty-panel-title">Painel Roubo de Carga</div><div class="empty-panel-sub">Registro e acompanhamento de ocorrências de roubo de carga e tratativas regulatórias.</div></div></div>
+    <div class="page" id="page-licenca"><div class="empty-panel"><div class="empty-panel-icon">📄</div><div class="empty-panel-title">Renovação de Licença</div><div class="empty-panel-sub">Controle de vencimentos e renovações de licenças de funcionamento e alvarás.</div></div></div>
+
+    <!-- REUNIÕES -->
+    <!-- PAINEL DE REUNIÕES -->
+    <div class="page" id="page-painel-reunioes">
+      <div class="pr-toolbar">
+        <div class="pr-summary" id="pr-summary">0 reuniões</div>
+        <button class="btn primary" onclick="openPainelReuniaoModal()">+ Nova Reunião</button>
+      </div>
+      <div id="pr-list"></div>
+    </div>
+
+
+    <!-- USUARIOS -->
+    <div class="page admin-only" id="page-usuarios">
+      <div class="section-title" style="display:flex;align-items:center;justify-content:space-between;gap:10px">
+        <span>👥 Usuários do Sistema</span>
+        <button class="btn primary sm" onclick="inviteNewUser()">+ Convidar Usuário</button>
+      </div>
+      <div class="users-grid" id="users-grid"></div>
+    </div>
+
+    <div class="page admin-only" id="page-sla">
+      <div class="section-title">📅 Feriados e Pontes — Cálculo de SLA</div>
+      <div class="feriados-card">
+        <div class="feriados-intro">Cadastre feriados nacionais, estaduais, municipais e pontes para que o cálculo automático de prazo interno (dias úteis) considere apenas dias efetivamente trabalhados pela equipe.</div>
+        <div class="feriados-form">
+          <input type="date" id="feriado-data" min="2026-01-01">
+          <input type="text" id="feriado-nome" placeholder="Ex: Carnaval, Ponte Corpus Christi...">
+          <button class="btn primary sm" onclick="addFeriado()">+ Adicionar</button>
+        </div>
+        <div class="feriados-list" id="feriados-list"></div>
+      </div>
+
+      <div class="section-title" style="margin-top:28px">📧 Backup Diário do Sistema</div>
+      <div class="feriados-card">
+        <div class="feriados-intro">
+          O RegulaPro tenta lembrar você de enviar um backup completo dos dados (produtos, SLA e feriados) por e-mail para <strong>g_regulatorio@granadophebo.com.br</strong> uma vez por dia. Por limitação de segurança dos navegadores, uma página HTML não pode enviar e-mails automaticamente em segundo plano — o botão abaixo baixa o arquivo de backup e abre seu cliente de e-mail já preenchido, faltando apenas anexar e clicar em enviar.
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+          <button class="btn primary" onclick="dispararBackupEmail()">📥 Gerar e Enviar Backup Agora</button>
+          <span id="backup-last-info" style="font-size:12px;color:var(--text3)"></span>
+        </div>
+        <div style="margin-top:12px;font-size:11.5px;color:var(--text3);line-height:1.6">
+          💡 <strong>Para automação 100% silenciosa</strong> (sem precisar clicar em nada todo dia), será necessário migrar o armazenamento para o Supabase com uma função agendada (cron job) no backend — podemos configurar isso na integração futura.
+        </div>
+      </div>
+    </div>
+
+    <div class="page admin-only" id="page-checklist">
+      <div class="section-title">📝 Listas Suspensas — Editar Opções</div>
+      <div class="list-editor-card">
+        <div style="font-size:12.5px;color:var(--text3);margin-bottom:14px;line-height:1.5">
+          Adicione, edite ou remova opções das listas suspensas de <strong>Marca</strong>, <strong>Linha</strong> e <strong>Tipo de Produto</strong>. As alterações se refletem imediatamente nos formulários de criação e edição de produtos.
+        </div>
+        <div id="list-editor-body"></div>
+      </div>
+
+      <div class="section-title" style="margin-top:28px">✅ Checklists por Etapa — Base Editável</div>
+      <div class="checklist-admin-card" id="checklist-admin-card">
+        <div style="font-size:12.5px;color:var(--text3);margin-bottom:14px;line-height:1.5">
+          Defina os itens de verificação para cada etapa do fluxo. Quando uma etapa for marcada como <strong>Concluída</strong>, o checklist aparece automaticamente para confirmação antes de fechar.
+        </div>
+        <div id="checklist-admin-body"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL NOVO PRODUTO -->
+<div class="modal-bd" id="m-produto">
+  <div class="modal">
+    <div class="modal-title">➕ Novo Produto</div>
+    <div class="form-group">
+      <label class="form-label">Nome do Produto</label>
+      <input class="form-ctrl" id="np-nome" placeholder="Ex: Hidratante Facial FPS 50">
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Responsável</label>
+        <select class="form-ctrl" id="np-colab">
+          <option value="inbox">📥 Caixa de Entrada</option>
+          <option value="ana">Ana</option><option value="bea">Beatriz</option>
+          <option value="car">Carla</option><option value="dan">Daniela</option>
+          <option value="eli">Elisabete</option><option value="fab">Fabiana</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Marca</label>
+        <select class="form-ctrl" id="np-marca">
+          <option value="">Selecione...</option>
+          <option>CARE</option><option>GRANADO</option><option>PHEBO</option><option>PUIG</option><option>LELI</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Linha</label>
+        <select class="form-ctrl" id="np-linha">
+          <option value="">Selecione...</option>
+          <option>ÁGUAS DE PHEBO</option><option>ANTISSÉPTICA</option><option>AROMÁTICOS</option><option>BARBEARIA</option><option>BEBÊ</option><option>CARE</option><option>FRUTAS</option><option>GLICERINA</option><option>ÍCONES PHEBO</option><option>LELI SCENTS</option><option>MEDICAMENTOS</option><option>ORIGENS</option><option>PERFUMARIA PHEBO</option><option>PET</option><option>PINK</option><option>TEMPEROS DA CULINÁRIA</option><option>TERRAPEUTICS</option><option>TRADICIONAL PHEBO</option><option>TRATAMENTO</option><option>VINTAGE</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Tipo de Produto</label>
+        <select class="form-ctrl" id="np-tipo">
+          <option value="">Selecione...</option>
+          <option>ÁGUA DE LIMPEZA</option><option>BALM LABIAL</option><option>BALM PÓS-BARBA</option><option>BATOM</option><option>BLUSH</option><option>BOUNCE</option><option>BRUMA</option><option>CERA CABELOS</option><option>CERA UNHAS</option><option>CICACARE</option><option>COLÔNIA</option><option>COLÔNIA ROLL-ON</option><option>CONDICIONADOR</option><option>CORRETIVO</option><option>CREME MÃOS</option><option>CREME CAPILAR</option><option>CREME DE ASSADURAS</option><option>CREME PARA CUTÍCULAS</option><option>DEO COLÔNIA</option><option>DESODORANTE</option><option>DESODORANTE PARA PÉS</option><option>DIFUSOR</option><option>EAU DE TOILETTE</option><option>EAU DE TOILETTE ROLL-ON</option><option>ESFOLIANTE</option><option>ESMALTES</option><option>ESPUMA BARBEAR</option><option>EXTRATO DE PERFUME</option><option>GEL DE BANHO</option><option>GEL PARA PÉS E PERNAS CANSADAS</option><option>GEL PROTETOR DE CALOS E BOLHAS</option><option>GEL RELAXANTE ANTI-CANSAÇO</option><option>GLOSS</option><option>HAND SANITIZER</option><option>HIDRATANTE</option><option>ILUMINADOR</option><option>KIT</option><option>LEITE DE IMERSÃO</option><option>LENÇO UMEDECIDO</option><option>MANTEIGA</option><option>MÁSC. CÍLIOS</option><option>MÁSCARA CAPILAR</option><option>ÓLEO CAPILAR</option><option>ÓLEO CORPORAL</option><option>ÓLEO DE BARBA</option><option>ÓLEO FORTALECEDOR DE UNHAS</option><option>PERFUME</option><option>PERFUME ROLL-ON</option><option>POLVILHO ANTISSÉPTICO</option><option>PROTETOR SOLAR</option><option>REMOVEDOR DE ESMALTE</option><option>REPARADOR DE CALCANHARES</option><option>REPELENTE</option><option>SABONETE BARRA</option><option>SABONETE DE BARBEAR</option><option>SABONETE LÍQUIDO</option><option>SACHET ESCALDA PÉS</option><option>SAIS DE BANHO</option><option>SÉRUM</option><option>SHAMPOO</option><option>SILKY LIPS</option><option>SKINDROPS</option><option>SOS CUTICULAS PERFEITAS</option><option>SPRAY AMBIENTE</option><option>SPRAY CORPO E CABELO</option><option>SUPOSITÓRIO DE GLICERINA</option><option>TALCO</option><option>VELA</option>
+        </select>
+      </div>
+    </div>
+    <div class="kit-toggle-row">
+      <label>
+        <input type="checkbox" id="np-iskit" onchange="toggleKitSection(this.checked)">
+        📦 Este produto é um <strong>Kit</strong>
+      </label>
+    </div>
+    <div class="kit-items-box" id="np-kit-box">
+      <div style="font-size:12px;color:var(--text3);margin-bottom:10px">Liste todos os produtos que compõem este kit:</div>
+      <div id="np-kit-items"></div>
+      <button class="btn-add-kit" onclick="addKitItem()">+ Adicionar produto ao kit</button>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeM('m-produto')">Cancelar</button>
+      <button class="btn primary" onclick="addProduto()">Criar Produto</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL RETROCESSO -->
+<div class="modal-bd" id="m-retrocesso">
+  <div class="modal">
+    <div class="modal-title">⚠️ Registrar Retrocesso</div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Data do Retrocesso</label>
+        <input class="form-ctrl" type="date" min="2026-01-01" id="rr-data">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Etapa</label>
+        <select class="form-ctrl" id="rr-etapa">
+          <option value="val">Validação Regulatória</option>
+          <option value="rot">Liberação de Rotulagem</option>
+          <option value="art">Conferência de Arte</option>
+          <option value="anv">Notificação ANVISA</option>
+          <option value="pos">Etapas Pós-ANVISA</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Setor Responsável pelo Retrocesso</label>
+      <select class="form-ctrl" id="rr-setor">
+        <option value="">Selecione o setor...</option>
+        <option>INTERNO - DESIGNERS</option>
+        <option>INTERNO - LOGÍSTICA</option>
+        <option>INTERNO - MKT</option>
+        <option>INTERNO - P&D</option>
+        <option>INTERNO - PCP</option>
+        <option>INTERNO - PROJETOS</option>
+        <option>INTERNO - QUALIDADE</option>
+        <option>INTERNO - REGULATÓRIOS</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Motivo do Retrocesso</label>
+      <textarea class="form-ctrl" id="rr-motivo" placeholder="Descreva o motivo do retrocesso..." rows="3"></textarea>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeM('m-retrocesso')">Cancelar</button>
+      <button class="btn danger" onclick="confirmarRetrocesso()">Registrar Retrocesso</button>
+    </div>
+  </div>
+</div>
+
+
+
+<!-- MODAL REALOCAR -->
+<div class="modal-bd" id="m-realoc">
+  <div class="modal">
+    <div class="modal-title">🔄 Realocar Produto</div>
+    <div class="form-group">
+      <label class="form-label">Produto</label>
+      <input class="form-ctrl" id="realoc-nome" disabled style="background:var(--surface2)">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Mover para a Analista</label>
+      <select class="form-ctrl" id="realoc-colab">
+        <option value="">Selecione...</option>
+        <option value="inbox">📥 Caixa de Entrada (sem dono)</option>
+        <option value="ana">Ana</option>
+        <option value="bea">Beatriz</option>
+        <option value="car">Carla</option>
+        <option value="dan">Daniela</option>
+        <option value="eli">Elisabete</option>
+        <option value="fab">Fabiana</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Motivo da Realocação (opcional)</label>
+      <textarea class="form-ctrl" id="realoc-motivo" placeholder="Ex: Férias, ausência, redistribuição de demandas..." rows="2"></textarea>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeM('m-realoc')">Cancelar</button>
+      <button class="btn primary" onclick="confirmarRealoc()">Realocar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL CHECKLIST -->
+<div class="modal-bd" id="m-checklist">
+  <div class="modal checklist-modal">
+    <div class="checklist-etapa-header">
+      <div class="checklist-etapa-dot" id="cl-etapa-dot"></div>
+      <div>
+        <div class="checklist-etapa-nome" id="cl-etapa-nome">Checklist</div>
+        <div style="font-size:12px;color:var(--text3)" id="cl-prod-nome"></div>
+      </div>
+    </div>
+    <div class="checklist-progress" id="cl-progress-wrap">
+      <div class="checklist-prog-bar"><div class="checklist-prog-fill" id="cl-prog-fill"></div></div>
+      <span class="checklist-prog-txt" id="cl-prog-txt">0/0</span>
+    </div>
+    <div class="checklist-items" id="cl-items"></div>
+    <div class="checklist-override-note" id="cl-override-note" style="display:none">
+      ⚠️ Alguns itens ainda não foram marcados. Você pode concluir mesmo assim — os itens pendentes serão registrados.
+    </div>
+    <div class="checklist-footer-note" id="cl-footer-note"></div>
+    <div class="modal-footer" style="margin-top:14px">
+      <button class="btn" onclick="closeM('m-checklist')">Cancelar</button>
+      <button class="btn primary" id="cl-confirm-btn" onclick="confirmarChecklist()">✅ Confirmar Conclusão</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL PAINEL REUNIÃO -->
+<div class="modal-bd" id="m-painel-reuniao">
+  <div class="modal pr-modal">
+    <div class="modal-title" id="pr-modal-title">📋 Nova Reunião</div>
+
+    <div class="form-group">
+      <label class="form-label">Responsável(eis)</label>
+      <div class="pr-responsaveis-list" id="pr-resp-list"></div>
+      <button class="btn-add-resp" onclick="addPRRespRow()">+ Adicionar responsável</button>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Nome da Reunião</label>
+      <input class="form-ctrl" id="pr-nome" placeholder="Ex: Alinhamento regulatório semanal">
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Data</label>
+        <input class="form-ctrl" type="date" id="pr-data" min="2026-01-01">
+      </div>
+    </div>
+
+    <div class="pr-time-row form-group" style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div>
+        <label class="form-label">Hora de Início</label>
+                <select class="form-ctrl" id="pr-inicio">
+          <option value="">--:--</option>
+          <option value="07:00">07:00</option>
+<option value="07:15">07:15</option>
+<option value="07:30">07:30</option>
+<option value="07:45">07:45</option>
+<option value="08:00">08:00</option>
+<option value="08:15">08:15</option>
+<option value="08:30">08:30</option>
+<option value="08:45">08:45</option>
+<option value="09:00">09:00</option>
+<option value="09:15">09:15</option>
+<option value="09:30">09:30</option>
+<option value="09:45">09:45</option>
+<option value="10:00">10:00</option>
+<option value="10:15">10:15</option>
+<option value="10:30">10:30</option>
+<option value="10:45">10:45</option>
+<option value="11:00">11:00</option>
+<option value="11:15">11:15</option>
+<option value="11:30">11:30</option>
+<option value="11:45">11:45</option>
+<option value="12:00">12:00</option>
+<option value="12:15">12:15</option>
+<option value="12:30">12:30</option>
+<option value="12:45">12:45</option>
+<option value="13:00">13:00</option>
+<option value="13:15">13:15</option>
+<option value="13:30">13:30</option>
+<option value="13:45">13:45</option>
+<option value="14:00">14:00</option>
+<option value="14:15">14:15</option>
+<option value="14:30">14:30</option>
+<option value="14:45">14:45</option>
+<option value="15:00">15:00</option>
+<option value="15:15">15:15</option>
+<option value="15:30">15:30</option>
+<option value="15:45">15:45</option>
+<option value="16:00">16:00</option>
+<option value="16:15">16:15</option>
+<option value="16:30">16:30</option>
+<option value="16:45">16:45</option>
+<option value="17:00">17:00</option>
+<option value="17:15">17:15</option>
+<option value="17:30">17:30</option>
+<option value="17:45">17:45</option>
+<option value="18:00">18:00</option>
+<option value="18:15">18:15</option>
+<option value="18:30">18:30</option>
+<option value="18:45">18:45</option>
+<option value="19:00">19:00</option>
+<option value="19:15">19:15</option>
+<option value="19:30">19:30</option>
+<option value="19:45">19:45</option>
+<option value="20:00">20:00</option>
+<option value="20:15">20:15</option>
+<option value="20:30">20:30</option>
+<option value="20:45">20:45</option>
+<option value="21:00">21:00</option>
+<option value="21:15">21:15</option>
+<option value="21:30">21:30</option>
+<option value="21:45">21:45</option>
+        </select>
+      </div>
+      <div>
+        <label class="form-label">Hora de Fim</label>
+                <select class="form-ctrl" id="pr-fim">
+          <option value="">--:--</option>
+          <option value="07:00">07:00</option>
+<option value="07:15">07:15</option>
+<option value="07:30">07:30</option>
+<option value="07:45">07:45</option>
+<option value="08:00">08:00</option>
+<option value="08:15">08:15</option>
+<option value="08:30">08:30</option>
+<option value="08:45">08:45</option>
+<option value="09:00">09:00</option>
+<option value="09:15">09:15</option>
+<option value="09:30">09:30</option>
+<option value="09:45">09:45</option>
+<option value="10:00">10:00</option>
+<option value="10:15">10:15</option>
+<option value="10:30">10:30</option>
+<option value="10:45">10:45</option>
+<option value="11:00">11:00</option>
+<option value="11:15">11:15</option>
+<option value="11:30">11:30</option>
+<option value="11:45">11:45</option>
+<option value="12:00">12:00</option>
+<option value="12:15">12:15</option>
+<option value="12:30">12:30</option>
+<option value="12:45">12:45</option>
+<option value="13:00">13:00</option>
+<option value="13:15">13:15</option>
+<option value="13:30">13:30</option>
+<option value="13:45">13:45</option>
+<option value="14:00">14:00</option>
+<option value="14:15">14:15</option>
+<option value="14:30">14:30</option>
+<option value="14:45">14:45</option>
+<option value="15:00">15:00</option>
+<option value="15:15">15:15</option>
+<option value="15:30">15:30</option>
+<option value="15:45">15:45</option>
+<option value="16:00">16:00</option>
+<option value="16:15">16:15</option>
+<option value="16:30">16:30</option>
+<option value="16:45">16:45</option>
+<option value="17:00">17:00</option>
+<option value="17:15">17:15</option>
+<option value="17:30">17:30</option>
+<option value="17:45">17:45</option>
+<option value="18:00">18:00</option>
+<option value="18:15">18:15</option>
+<option value="18:30">18:30</option>
+<option value="18:45">18:45</option>
+<option value="19:00">19:00</option>
+<option value="19:15">19:15</option>
+<option value="19:30">19:30</option>
+<option value="19:45">19:45</option>
+<option value="20:00">20:00</option>
+<option value="20:15">20:15</option>
+<option value="20:30">20:30</option>
+<option value="20:45">20:45</option>
+<option value="21:00">21:00</option>
+<option value="21:15">21:15</option>
+<option value="21:30">21:30</option>
+<option value="21:45">21:45</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Anotações</label>
+      <textarea class="pr-notes-input" id="pr-notas" placeholder="Pauta, decisões, encaminhamentos, participantes externos, links..."></textarea>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn" onclick="closeM('m-painel-reuniao')">Cancelar</button>
+      <button class="btn primary" onclick="savePainelReuniao()">Salvar Reunião</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL MATÉRIA-PRIMA -->
+<div class="modal-bd" id="m-mp">
+  <div class="modal" style="width:440px">
+    <div class="modal-title" id="mp-modal-title">🧪 Nova Matéria-Prima</div>
+    <div class="form-group">
+      <label class="form-label">Nome da Matéria-Prima</label>
+      <input class="form-ctrl" id="mp-nome" placeholder="Ex: Extrato de Açaí Liofilizado">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Código GED</label>
+      <input class="form-ctrl" id="mp-ged" placeholder="Ex: GED-2024-001">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Status</label>
+      <select class="form-ctrl" id="mp-status" onchange="toggleMPPendencia(this.value)">
+        <option value="backlog">📦 Backlog</option>
+        <option value="andamento">🔄 Em andamento</option>
+        <option value="incompleto">⚠️ Incompleto</option>
+        <option value="concluido">✅ Concluído</option>
+      </select>
+    </div>
+    <div class="form-group" id="mp-pendencia-group" style="display:none">
+      <label class="form-label">Descreva a pendência</label>
+      <textarea class="form-ctrl" id="mp-pendencia" placeholder="Detalhe o que está pendente..." rows="3"></textarea>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeM('m-mp')">Cancelar</button>
+      <button class="btn primary" onclick="saveMP()">Salvar</button>
+    </div>
+  </div>
+</div>
